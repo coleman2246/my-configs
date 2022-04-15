@@ -1,0 +1,14 @@
+# /dev/sda2
+UUID=6c8ff673-e4d5-45c3-88c9-280a9b44d654	/         	ext4      	rw,relatime	0 1
+
+UUID=8f029d40-a09a-4f70-aaf1-ec48de4f42bb       /swap           swap            rw,noatime      0 1
+
+
+# /dev/sde2
+UUID=407659B47659AB82 /media/New\040Volume1 ntfs-3g remove_hiberfile,rw,nofail,uid=1000,gid=1000 0 0
+
+# /dev/sdd2
+UUID=52F6635AF6633CFB /media/New\040Volume auto rw,nofail 0 0
+
+
+
