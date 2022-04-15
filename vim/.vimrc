@@ -150,6 +150,19 @@ Plug 'myusuf3/numbers.vim'
 " Nice icons in the file explorer and file type status line.
 Plug 'ryanoasis/vim-devicons'
 
+Plug 'easymotion/vim-easymotion'
+" <Leader>f{char} to move to {char}
+map  f <Plug>(easymotion-bd-f)
+
+" s{char}{char} to move to {char}{char}
+nmap F <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map s <Plug>(easymotion-bd-jk)
+
+" Move to word
+map  W <Plug>(easymotion-bd-w)
+
 if using_vim
     " Consoles as buffers (neovim has its own consoles as buffers)
     Plug 'rosenfeld/conque-term'
@@ -176,7 +189,7 @@ endif
 " ============================================================================
 " Vim settings and mappings
 " You can edit them as you wish
- 
+
 if using_vim
     " A bunch of things that are set by default in neovim, but not in vim
 
@@ -368,9 +381,9 @@ nmap ,c :Commands<CR>
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
 call deoplete#custom#option({
-\   'ignore_case': v:true,
-\   'smart_case': v:true,
-\})
+            \   'ignore_case': v:true,
+            \   'smart_case': v:true,
+            \})
 " complete with words from any opened file
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes._ = '_'
