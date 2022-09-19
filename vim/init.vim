@@ -1,0 +1,1 @@
+/home/cole/.config/nvim/init.vim
