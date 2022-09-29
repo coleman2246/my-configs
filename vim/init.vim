@@ -41,6 +41,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 if using_neovim && vim_plug_just_installed
     Plug 'Shougo/deoplete.nvim', {'do': ':autocmd VimEnter * UpdateRemotePlugins'}
 else
@@ -48,9 +49,7 @@ else
 endif
 Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'deoplete-plugins/deoplete-jedi'
 Plug 'Shougo/context_filetype.vim'
-Plug 'davidhalter/jedi-vim'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'jeetsukumaran/vim-indentwise'
 Plug 'sheerun/vim-polyglot'
@@ -130,7 +129,6 @@ nmap ,wf :execute ":BLines " . expand('<cword>')<CR>
 nmap ,F :Lines<CR>
 nmap ,wF :execute ":Lines " . expand('<cword>')<CR>
 nmap ,c :Commands<CR>
-nmap ,D :tab split<CR>:call jedi#goto()<CR>
 nmap - <Plug>(choosewin)
 nmap <leader>sn <plug>(signify-next-hunk)
 nmap <leader>sp <plug>(signify-prev-hunk)
@@ -139,6 +137,10 @@ nnoremap <C-l> :tabnext<CR>
 
 nnoremap <silent> // :noh<CR>
 autocmd BufWritePre *.py :%s/\s\+$//e
+inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
+inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+
 
 au FileType python map <silent> <leader>b Oimport ipdb; ipdb.set_trace()<esc>
 
@@ -182,11 +184,7 @@ call deoplete#custom#option({
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes._ = '_'
 
-let g:jedi#completions_enabled = 0
 
-let g:jedi#goto_command = ',d'
-let g:jedi#usages_command = ',o'
-let g:jedi#goto_assignments_command = ',a'
 :command WQ wq
 :command Wq wq
 :command W w
