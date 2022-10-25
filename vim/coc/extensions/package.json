@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "coc-pyright": ">=1.1.272",
+    "coc-spell-checker": ">=1.2.0",
+    "coc-flutter": ">=1.9.9",
+    "coc-clangd": ">=0.25.0",
+    "coc-json": ">=1.6.1",
+    "coc-dictionary": ">=1.2.2"
+  }
+}
