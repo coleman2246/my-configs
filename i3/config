@@ -5,6 +5,7 @@
 # this file and re-run i3-config-wizard(1).
 #
 
+include /etc/sway/config.d/*
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
@@ -36,8 +37,12 @@ gaps inner 5
 gaps outer 5
 smart_gaps on
 
+input type:keyboard {
+        xkb_layout us
+        xkb_variant dvorak
+}
 
-new_window pixel 3
+#new_window pixel 3
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -50,13 +55,14 @@ set $refresh_i3status killall -SIGUSR1 i3status
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec urxvt
+bindsym $mod+Return exec konsole
 
 # start discord
 bindsym $mod+Shift+d exec discord
 
 # open config in vim 
-bindsym $mod+c exec urxvt -e nvim -n ~/.config/i3/config
+bindsym $mod+c exec konsole -e nvim -n ~/.config/sway/config
+bindsym $mod+Shift+n exec konsole -e nvim -n /etc/nixos/configuration.nix
 
 # start compton 
 exec picom --config ~/config/i3/compton.conf
@@ -65,7 +71,7 @@ exec picom --config ~/config/i3/compton.conf
 exec xset -b
 
 # screenshot
-bindsym $mod+Shift+Enter exec spectacle
+#bindsym $mod+Shift+Enter exec spectacle
 
 # bind spotify pause
 bindsym $mod+slash exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
