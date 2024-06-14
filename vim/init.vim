@@ -99,6 +99,7 @@ map <F3> :NERDTreeToggle<CR>
 "nmap ,e :Files<CR>
 "nmap ,g :BTag<CR>
 nmap ,e :Telescope find_files<CR>
+vmap ,e :Telescope find_files default_text=@* <CR>
 nmap ,o :Telescope live_grep<CR>
 
 
