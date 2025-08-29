@@ -53,9 +53,13 @@ map("n", "gD", vim.lsp.buf.declaration, opts)          -- Go to declaration
 map("n", "gi", vim.lsp.buf.implementation, opts)       -- Go to implementation
 map("n", "gr", vim.lsp.buf.references, opts)           -- List references
 map("n", "K", vim.lsp.buf.hover, opts)
+map("n", "<leader>le", ":lua vim.diagnostic.setqflist()<CR>", opts)
 
 --marks nvim
 map("n", "mm", require("marks").toggle, { noremap = true, silent = true, desc = "Toggle mark" })
 map("n", "mn", require("marks").next, { noremap = true, silent = true, desc = "Next mark" })
 map("n", "mp", require("marks").prev, { noremap = true, silent = true, desc = "Prev mark" })
 map("n", "ml", ":MarksQFListBuf<CR>", { noremap = true, silent = true, desc = "List Marks in Buffer" })
+
+
+
