@@ -5,7 +5,9 @@ return {
     local util = require("lspconfig.util")
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-    local capabilities = cmp_nvim_lsp.default_capabilities()
+    -- Safer capabilities setup
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
     -- Helper: search upward for compile_commands.json
     local function find_compile_commands_dir(startpath)
@@ -25,13 +27,24 @@ return {
           new_config.cmd = { "clangd", "--compile-commands-dir=" .. cc_dir }
         end
       end,
-      root_dir = util.root_pattern("compile_commands.json", ".git", "Makefile", "CMakeLists.txt"),
+      root_dir = util.root_pattern(
+        "compile_commands.json",
+        ".git",
+        "Makefile",
+        "CMakeLists.txt"
+      ),
     })
 
     -- --- Python (Pyright) ---
     lspconfig.pyright.setup({
       capabilities = capabilities,
-      root_dir = util.root_pattern("pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git"),
+      root_dir = util.root_pattern(
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "requirements.txt",
+        ".git"
+      ),
       settings = {
         python = {
           pythonPath = (function()
@@ -58,6 +71,7 @@ return {
     lspconfig.ruff.setup({
       capabilities = capabilities,
       on_attach = function(client, _)
+        -- disable hover so Pyright handles it
         client.server_capabilities.hoverProvider = false
       end,
       root_dir = util.root_pattern("pyproject.toml", ".ruff.toml", ".git"),
@@ -69,20 +83,21 @@ return {
     })
 
     -- --- Rust (rust-analyzer) ---
-    lspconfig.rust_analyzer.setup({
-      capabilities = capabilities,
-      root_dir = util.root_pattern("Cargo.toml", ".git"),
-      settings = {
-        ["rust-analyzer"] = {
-          cargo = {
-            allFeatures = true,
-          },
-          checkOnSave = {
-            command = "clippy", -- use cargo clippy for better diagnostics
-          },
-        },
-      },
-    })
+    -- Uncomment if needed
+    -- lspconfig.rust_analyzer.setup({
+    --   capabilities = capabilities,
+    --   root_dir = util.root_pattern("Cargo.toml", ".git"),
+    --   settings = {
+    --     ["rust-analyzer"] = {
+    --       cargo = {
+    --         allFeatures = true,
+    --       },
+    --       checkOnSave = {
+    --         command = "clippy", -- use cargo clippy for better diagnostics
+    --       },
+    --     },
+    --   },
+    -- })
   end,
 }
 

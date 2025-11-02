@@ -13,6 +13,7 @@ opt.shell = '/bin/bash'
 opt.termguicolors = true 
 opt.ignorecase = true
 opt.number = true         
+opt.fixendofline = false
 opt.relativenumber = true 
 opt.timeoutlen = 1000
 
