@@ -1,103 +1,111 @@
+-- Common on_attach function
+local on_attach = function(client, bufnr)
+  local opts = { noremap=true, silent=true, buffer=bufnr }
+  local map = vim.keymap.set
+
+  -- Go-to / Navigation
+  map('n', 'gd', function() vim.lsp.buf.definition() end, opts)
+  map('n', 'gD', function() vim.lsp.buf.declaration() end, opts)
+  map('n', 'gi', function() vim.lsp.buf.implementation() end, opts)
+  map('n', 'gr', function() vim.lsp.buf.references() end, opts)
+  map('n', 'gt', function() vim.lsp.buf.type_definition() end, opts)
+
+  -- Hover / Signature help
+  map('n', 'K', function() vim.lsp.buf.hover() end, opts)
+  map('n', '<C-k>', function() vim.lsp.buf.signature_help() end, opts)
+
+  -- Code actions / Refactor
+  map('n', '<leader>ca', function() vim.lsp.buf.code_action() end, opts)
+  map('v', '<leader>ca', function() vim.lsp.buf.range_code_action() end, opts)
+  map('n', '<leader>rn', function() vim.lsp.buf.rename() end, opts)
+
+  -- Diagnostics
+  map('n', '<leader>e', function() vim.diagnostic.open_float() end, opts)
+  map('n', '[d', function() vim.diagnostic.goto_prev() end, opts)
+  map('n', ']d', function() vim.diagnostic.goto_next() end, opts)
+  map('n', '<leader>q', function() vim.diagnostic.setloclist() end, opts)
+end
+
+
 return {
-  "neovim/nvim-lspconfig",
-  config = function()
-    local lspconfig = require("lspconfig")
-    local util = require("lspconfig.util")
-    local cmp_nvim_lsp = require("cmp_nvim_lsp")
+    "neovim/nvim-lspconfig",
+    config = function()
+        local util = require("lspconfig.util")
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-    -- Safer capabilities setup
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+        vim.lsp.config('pyright', {
+            name = "pyright",
+            cmd = { "pyright-langserver", "--stdio" },
+            capabilities = capabilities,
+            filetypes = { "python" },
+            root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git", vim.uv.cwd() },
+            on_attach = on_attach
+            --    print("pyright LSP attached to buffer " .. bufnr)
+            --end,
+        })
+        -- Example: print a message when a Python file is opened
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "python",
+            callback = function()
+                local attached = false
+                for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+                    if c.name == "pyright" then
+                        attached = true
+                        break
+                    end
+                end
+                if not attached then
+                    vim.lsp.enable('pyright')
+                end
+            end,
+        })
 
-    -- Helper: search upward for compile_commands.json
-    local function find_compile_commands_dir(startpath)
-      local path = util.search_ancestors(startpath, function(path)
-        local file = util.path.join(path, "compile_commands.json")
-        return util.path.is_file(file) and path or nil
-      end)
-      return path
-    end
+        vim.lsp.config('clangd', {
+            name = "clangd",
+            cmd = { "/usr/bin/clangd" },
+            capabilities = {
+                offsetEncoding = { "utf-8", "utf-16" },
+                textDocument = {
+                    completion = {
+                        editsNearCursor = true
+                    }
+                }
+            },
+            filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+            root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
+            on_init = function(client, init_result)
+                if init_result.offsetEncoding then
+                    client.offset_encoding = init_result.offsetEncoding
+                end
+            end,
+            on_attach = function(client, bufnr)
+                on_attach(client, bufnr)
+                vim.api.nvim_buf_create_user_command(bufnr, 'LspClangdSwitchSourceHeader', function()
+                    switch_source_header(bufnr, client)
+                end, { desc = 'Switch between source/header' })
 
-    -- --- C/C++ ---
-    lspconfig.clangd.setup({
-      capabilities = capabilities,
-      on_new_config = function(new_config, root_dir)
-        local cc_dir = find_compile_commands_dir(root_dir)
-        if cc_dir then
-          new_config.cmd = { "clangd", "--compile-commands-dir=" .. cc_dir }
-        end
-      end,
-      root_dir = util.root_pattern(
-        "compile_commands.json",
-        ".git",
-        "Makefile",
-        "CMakeLists.txt"
-      ),
-    })
+                vim.api.nvim_buf_create_user_command(bufnr, 'LspClangdShowSymbolInfo', function()
+                    symbol_info(bufnr, client)
+                end, { desc = 'Show symbol info' })
+            end,
+        })
 
-    -- --- Python (Pyright) ---
-    lspconfig.pyright.setup({
-      capabilities = capabilities,
-      root_dir = util.root_pattern(
-        "pyproject.toml",
-        "setup.py",
-        "setup.cfg",
-        "requirements.txt",
-        ".git"
-      ),
-      settings = {
-        python = {
-          pythonPath = (function()
-            local venv = os.getenv("VIRTUAL_ENV")
-            if venv and #venv > 0 then
-              return venv .. "/bin/python"
-            end
-            return vim.fn.exepath("python3") or "python3"
-          end)(),
-        },
-        pyright = {
-          disableOrganizeImports = true,
-        },
-        analysis = {
-          typeCheckingMode = "basic",
-          autoImportCompletions = true,
-          useLibraryCodeForTypes = true,
-          diagnosticMode = "openFilesOnly",
-        },
-      },
-    })
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "c",
+            callback = function()
+                local attached = false
+                for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+                    if c.name == "c" then
+                        attached = true
+                        break
+                    end
+                end
+                if not attached then
+                    vim.lsp.enable('clangd')
+                end
+            end,
+        })
 
-    -- --- Python (Ruff) ---
-    lspconfig.ruff.setup({
-      capabilities = capabilities,
-      on_attach = function(client, _)
-        -- disable hover so Pyright handles it
-        client.server_capabilities.hoverProvider = false
-      end,
-      root_dir = util.root_pattern("pyproject.toml", ".ruff.toml", ".git"),
-      init_options = {
-        settings = {
-          args = {},
-        },
-      },
-    })
 
-    -- --- Rust (rust-analyzer) ---
-    -- Uncomment if needed
-    -- lspconfig.rust_analyzer.setup({
-    --   capabilities = capabilities,
-    --   root_dir = util.root_pattern("Cargo.toml", ".git"),
-    --   settings = {
-    --     ["rust-analyzer"] = {
-    --       cargo = {
-    --         allFeatures = true,
-    --       },
-    --       checkOnSave = {
-    --         command = "clippy", -- use cargo clippy for better diagnostics
-    --       },
-    --     },
-    --   },
-    -- })
-  end,
+    end,
 }
-

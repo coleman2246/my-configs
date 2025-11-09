@@ -1,0 +1,21 @@
+return {
+    {
+        'vimwiki/vimwiki',
+        init = function()
+            vim.g.vimwiki_list = {
+                {
+                    -- Your existing basics
+                    path   = '~/vimwiki',       -- wiki folder
+                    syntax = 'markdown',        -- markdown mode
+                    ext    = '.md',             -- file extension
+                }
+            }
+
+            -- Diary settings (kept from your config)
+            vim.g.vimwiki_diary_index       = 'index'
+            vim.g.vimwiki_diary_header      = '# %Y-%m-%d %A'
+            vim.g.vimwiki_diary_file_type   = 'markdown'
+            vim.g.vimwiki_markdown_link_ext = 1
+        end,
+    }
+}

@@ -8,6 +8,7 @@ map("n", "<leader>ln", ":cnext<CR>")
 map("n", "<leader>lp", ":cprev<CR>")
 map("n", "<leader>lo", ":copen<CR>")
 map("n", "<leader>lc", ":cclose<CR>")
+map("n", "<leader>ss", ":set spell! spell?<CR>")
 
 
 vim.api.nvim_create_user_command("CopyRelPath", function()
@@ -24,7 +25,7 @@ map("n", "tt", ":tabnew | lua require(\"oil\").open()<CR>",{})
 
 
 -- easymotion
-map({'n', 'x', 'v', 'o', 's'}, 'f', '<Plug>(easymotion-bd-f)', {noremap = true})
+map({'n', 'x', 'o'}, 'f', '<Plug>(easymotion-bd-f)', {noremap = false})
 
 
 -- window picker
@@ -43,6 +44,7 @@ map('n', ',i', ':FzfLua quickfix<CR>', { noremap = true })
 
 -- telescope
 map('n', ',o', ":lua require('telescope').extensions.live_grep_args.live_grep_args({default_text = \"-tc --glob !test* --glob !build* \"})<CR>",{ noremap = true })
+map('n', '<Leader>,o', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",{ noremap = true })
 map('n', ',u', ':Telescope buffers<CR>', { noremap = true })
 map('n', ',a', ':Telescope telescope-tabs list_tabs<CR>', { noremap = true })
 --map('n', ',i', ':Telescope marks<CR>', { noremap = true })
@@ -59,3 +61,10 @@ map("n", "mm", require("marks").toggle, { noremap = true, silent = true, desc = 
 map("n", "mn", require("marks").next, { noremap = true, silent = true, desc = "Next mark" })
 map("n", "mN", require("marks").prev, { noremap = true, silent = true, desc = "Prev mark" })
 map("n", "ml", ":MarksQFListBuf<CR>", { noremap = true, silent = true, desc = "List Marks in Buffer" })
+
+
+-- vimwiki
+map("n", "<leader>ws", ":put =repeat('-', 80)<CR>", { noremap = true, silent = true })
+map('n', '<leader>ww', ':VimwikiIndex<CR>', { noremap = true, silent = true })
+map('n', '<leader>wb', ':VimwikiGoBackLink<CR>', { noremap = true, silent = true })
+

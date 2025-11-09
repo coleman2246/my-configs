@@ -1,4 +1,7 @@
 return {
-  "easymotion/vim-easymotion",
-  lazy = false, -- load on startup
+    "easymotion/vim-easymotion",
+    init = function()
+        vim.g.EasyMotion_keys = 'aoeuidths-'
+    end,
+
 }

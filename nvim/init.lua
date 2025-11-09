@@ -6,6 +6,5 @@ require("config.custom_commands")
 
 if vim.env.INDIE_LAPTOP then
     require("indie.keymaps")
-    require("indie.nvim-lspconfig")
 end
 

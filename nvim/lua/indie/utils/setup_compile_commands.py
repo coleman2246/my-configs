@@ -1,6 +1,5 @@
-import os
+import os, shlex
 import json
-import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def find_compile_commands(start_dir):
@@ -33,6 +32,54 @@ def find_compile_commands(start_dir):
                 del futures[future]
 
     return compile_commands
+
+def clean_command(entry):
+    cwd = entry["directory"]
+    tokens = shlex.split(entry["command"])
+
+    new_tokens = []
+    skip_next = False
+    seen_includes = set()
+
+    for i, tok in enumerate(tokens):
+        print(tok)
+        # Normalize -I and -isystem
+        if tok.startswith("-I"):
+            path = tok[2:]
+            if not os.path.isabs(path):
+                path = os.path.normpath(os.path.join(cwd, path))
+            if path not in seen_includes:
+                new_tokens.append("-I" + path)
+                seen_includes.add(path)
+            continue
+
+        if tok == "-isystem" and i + 1 < len(tokens):
+            path = tokens[i + 1]
+            if not os.path.isabs(path):
+                path = os.path.normpath(os.path.join(cwd, path))
+            if path not in seen_includes:
+                new_tokens.extend(["-isystem", path])
+                seen_includes.add(path)
+            skip_next = True
+            continue
+
+        if skip_next:
+            skip_next = False
+            continue
+
+        # Drop unnecessary flags for clangd
+        if tok.startswith("--xtensa-core") or tok.startswith("--xtensa-system"):
+            continue
+
+        if tok.startswith("-o"):  # drop output file
+            skip_next = True
+            continue
+
+        new_tokens.append(tok)
+
+    entry["command"] = " ".join(new_tokens)
+    return entry
+
    
 def merge_json_files(file_list, output_file):
     merged_json = []
@@ -47,7 +94,20 @@ def merge_json_files(file_list, output_file):
                     print(f"Invalid JSON format in file: {file}")
             except json.JSONDecodeError as e:
                 print(f"Error parsing JSON in file {file}: {e}")
+
+    files_found  = set()
+
+    duplicates_found : int = 0
+    for i, entry in enumerate(merged_json):
+        if entry["file"] in files_found:
+            duplicates_found += 1
+            del merged_json[i]
+        else:
+            merged_json[i] = clean_command(entry)
+
+        files_found.add(entry["file"])
     
+
     with open(output_file, 'w') as outfile:
         json.dump(merged_json, outfile, indent=2)
     print(f"Found {len(file_list)} many compile_commands")

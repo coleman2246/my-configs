@@ -16,6 +16,5 @@ opt.number = true
 opt.fixendofline = false
 opt.relativenumber = true 
 opt.timeoutlen = 1000
-
-
+opt.spelllang = "en_us"
 
