@@ -8,7 +8,7 @@ local on_attach = function(client, bufnr)
   map('n', 'gD', function() vim.lsp.buf.declaration() end, opts)
   map('n', 'gi', function() vim.lsp.buf.implementation() end, opts)
   map('n', 'gr', function() vim.lsp.buf.references() end, opts)
-  map('n', 'gt', function() vim.lsp.buf.type_definition() end, opts)
+  map('n', '<leader>gt', function() vim.lsp.buf.type_definition() end, opts)
 
   -- Hover / Signature help
   map('n', 'K', function() vim.lsp.buf.hover() end, opts)
@@ -33,29 +33,39 @@ return {
         local util = require("lspconfig.util")
         local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-        vim.lsp.config('pyright', {
-            name = "pyright",
-            cmd = { "pyright-langserver", "--stdio" },
-            capabilities = capabilities,
-            filetypes = { "python" },
-            root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git", vim.uv.cwd() },
-            on_attach = on_attach
-            --    print("pyright LSP attached to buffer " .. bufnr)
-            --end,
-        })
+        vim.lsp.config('pyrefly', {
+           name = "pyrefly",
+           cmd = { "pyrefly", "lsp" },
+           capabilities = capabilities,
+           filetypes = { "python" },
+           root_markers = { "pyproject.toml", ".git", vim.uv.cwd() },
+           on_attach = on_attach
+           --    print("pyright LSP attached to buffer " .. bufnr)
+           --end,
+       })
+       --vim.lsp.config('pyright', {
+       --    name = "pyright",
+       --    cmd = { "pyright-langserver", "--stdio" },
+       --    capabilities = capabilities,
+       --    filetypes = { "python" },
+       --    root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git", vim.uv.cwd() },
+       --    on_attach = on_attach
+       --    --    print("pyright LSP attached to buffer " .. bufnr)
+       --    --end,
+       --})
         -- Example: print a message when a Python file is opened
         vim.api.nvim_create_autocmd("FileType", {
             pattern = "python",
             callback = function()
                 local attached = false
                 for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
-                    if c.name == "pyright" then
+                    if c.name == "pyrefly" then
                         attached = true
                         break
                     end
                 end
                 if not attached then
-                    vim.lsp.enable('pyright')
+                    vim.lsp.enable('pyrefly')
                 end
             end,
         })

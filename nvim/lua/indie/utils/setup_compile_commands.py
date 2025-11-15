@@ -42,7 +42,6 @@ def clean_command(entry):
     seen_includes = set()
 
     for i, tok in enumerate(tokens):
-        print(tok)
         # Normalize -I and -isystem
         if tok.startswith("-I"):
             path = tok[2:]

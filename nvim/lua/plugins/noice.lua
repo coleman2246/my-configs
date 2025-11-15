@@ -1,0 +1,88 @@
+return {}
+--   return {
+--       "folke/noice.nvim",
+--       event = "VeryLazy",
+--       dependencies = {
+--           "MunifTanjim/nui.nvim",
+--           -- optional for notifications
+--           "rcarriga/nvim-notify",
+--       },
+--       opts = {
+--           -- Basic config
+--           lsp = {
+--               override = {
+--                   ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+--                   ["vim.lsp.util.stylize_markdown"] = true,
+--                   ["cmp.entry.get_documentation"] = true,  -- if using nvim‑cmp
+--               },
+--               hover = { enabled = true },
+--               signature = { enabled = true },
+--           },
+--           cmdline = {
+--               enabled = true,
+--               view = "cmdline_popup",  -- or "cmdline" if you prefer classic bottom
+--               format = {
+--                   cmdline  = { icon = "", lang = "vim" },
+--                   search_down = { icon = " ⌄", lang = "regex" },
+--                   search_up   = { icon = " ⌃", lang = "regex" },
+--                   filter      = { icon = "$", lang = "bash" },
+--                   lua         = { icon = "", lang = "lua" },
+--                   help        = { icon = "?", lang = "vim" },
+--               },
+--           },
+--           messages = {
+--               enabled = true,
+--               view = "notify",        -- how normal messages are shown
+--               view_error = "notify",
+--               view_warn  = "notify",
+--               view_history = "messages",
+--               view_search = "virtualtext",  -- show search count as virtual text
+--           },
+--           popupmenu = {
+--               enabled = true,
+--               backend = "nui",  -- use "cmp" if you integrate with nvim‑cmp
+--               kind_icons = {},  -- you can override icons, or set to false to disable
+--           },
+--           notify = {
+--               enabled = true,
+--               view = "notify",
+--           },
+--           presets = {
+--               bottom_search       = true,  -- search uses bottom cmdline
+--               command_palette     = true,  -- show cmdline & popupmenu together
+--               long_message_to_split = true, -- long messages go to split
+--               inc_rename          = false,  -- use input dialog for inc-rename?
+--               lsp_doc_border      = true,
+--           },
+--           routes = {
+--               -- example: skip showing "written" messages
+--               {
+--                   filter = {
+--                       event = "msg_show",
+--                       any = {
+--                           { find = "written" },
+--                       },
+--                   },
+--                   opts = { skip = true },
+--               },
+--               -- example: skip search_count messages
+--               {
+--                   filter = {
+--                       event = "msg_show",
+--                       kind = "search_count",
+--                   },
+--                   opts = { skip = true },
+--               },
+--               {
+--                   view = "notify",
+--                   filter = {
+--                       event = "msg_showmode",
+--                       any = {
+--                           {find = "recording"}
+--                       }
+--                   },
+--               },
+--           },
+--       }
+--   }
+--

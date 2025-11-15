@@ -12,11 +12,23 @@ map("n", "<leader>ss", ":set spell! spell?<CR>")
 
 
 vim.api.nvim_create_user_command("CopyRelPath", function()
-  local path = vim.fn.expand("%") -- relative path to current file
-  vim.fn.setreg("+", path)        -- copy to system clipboard
-  print("Copied to clipboard: " .. path)
+    local path = vim.fn.expand("%") -- relative path to current file
+    vim.fn.setreg("+", path)        -- copy to system clipboard
+    vim.fn.setreg('"', path)        -- copy to system clipboard
+    vim.cmd('OSCYankRegister "')  -- explicitly trigger OSCYank
 end, {})
 map("n", "ycf", "<cmd>CopyRelPath<CR>", { desc = "Copy relative path" })
+
+vim.api.nvim_create_user_command("CopyAbsPath", function()
+    local path = vim.fn.expand("%:p") -- relative path to current file
+    vim.fn.setreg("+", path)        -- copy to system clipboard
+    vim.fn.setreg('"', path)        -- copy to system clipboard
+    vim.cmd('OSCYankRegister "')  -- explicitly trigger OSCYank
+end, {})
+map("n", "yca", "<cmd>CopyAbsPath<CR>", { desc = "Copy absolute path" })
+
+
+
 
 
 -- oil
@@ -25,8 +37,7 @@ map("n", "tt", ":tabnew | lua require(\"oil\").open()<CR>",{})
 
 
 -- easymotion
-map({'n', 'x', 'o'}, 'f', '<Plug>(easymotion-bd-f)', {noremap = false})
-
+vim.keymap.set({'n', 'x', 'o'}, 'f', '<Plug>(easymotion-bd-f)', { noremap = false, silent = true })
 
 -- window picker
 map('n', '-', function()
@@ -43,11 +54,12 @@ map('n', ',i', ':FzfLua quickfix<CR>', { noremap = true })
 
 
 -- telescope
-map('n', ',o', ":lua require('telescope').extensions.live_grep_args.live_grep_args({default_text = \"-tc --glob !test* --glob !build* \"})<CR>",{ noremap = true })
+map('n', ',o', ":lua require('telescope').extensions.live_grep_args.live_grep_args({default_text = \"-tc --no-ignore --glob !test* --glob !build* \"})<CR>",{ noremap = true })
 map('n', '<Leader>,o', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",{ noremap = true })
 map('n', ',u', ':Telescope buffers<CR>', { noremap = true })
 map('n', ',a', ':Telescope telescope-tabs list_tabs<CR>', { noremap = true })
---map('n', ',i', ':Telescope marks<CR>', { noremap = true })
+map('n', ',h', ':Telescope marks<CR>', { noremap = true })
+map('n', ',t', ':Telescope current_buffer_fuzzy_find<CR>', { noremap = true, silent = true})
 
 -- nvim-lspconfig
 map("n", "gd", vim.lsp.buf.definition, opts)           -- Go to definition

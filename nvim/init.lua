@@ -1,6 +1,6 @@
+require("config.global_vars")
 require("config.lazy")
 require("config.options")
-require("config.global_vars")
 require("config.keymaps")
 require("config.custom_commands")
 
