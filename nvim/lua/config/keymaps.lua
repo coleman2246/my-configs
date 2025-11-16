@@ -76,7 +76,15 @@ map("n", "ml", ":MarksQFListBuf<CR>", { noremap = true, silent = true, desc = "L
 
 
 -- vimwiki
-map("n", "<leader>ws", ":put =repeat('-', 80)<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>ws", function()
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, row, row, false, {
+    "",
+    string.rep("-", 80),
+    ""
+  })
+end, { noremap = true, silent = true })
+
 map('n', '<leader>ww', ':VimwikiIndex<CR>', { noremap = true, silent = true })
 map('n', '<leader>wb', ':VimwikiGoBackLink<CR>', { noremap = true, silent = true })
 

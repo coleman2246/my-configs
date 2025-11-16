@@ -43,23 +43,12 @@ return {
            --    print("pyright LSP attached to buffer " .. bufnr)
            --end,
        })
-       --vim.lsp.config('pyright', {
-       --    name = "pyright",
-       --    cmd = { "pyright-langserver", "--stdio" },
-       --    capabilities = capabilities,
-       --    filetypes = { "python" },
-       --    root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git", vim.uv.cwd() },
-       --    on_attach = on_attach
-       --    --    print("pyright LSP attached to buffer " .. bufnr)
-       --    --end,
-       --})
-        -- Example: print a message when a Python file is opened
         vim.api.nvim_create_autocmd("FileType", {
             pattern = "python",
             callback = function()
                 local attached = false
                 for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
-                    if c.name == "pyrefly" then
+                    if c.name == "py" then
                         attached = true
                         break
                     end
@@ -117,5 +106,40 @@ return {
         })
 
 
+        vim.lsp.config('rust_analyzer', {
+            name = "rust_analyzer",
+            cmd = { "/usr/bin/rust-analyzer"},
+            capabilities = {
+                offsetEncoding = { "utf-8", "utf-16" },
+                textDocument = {
+                    completion = {
+                        editsNearCursor = true
+                    }
+                }
+            },
+            filetypes = {"rust"},
+            root_markers = { "Cargo.toml", ".git" },
+            on_attach = function(client, bufnr)
+                on_attach(client, bufnr)
+            end,
+ 
+        })
+
+
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "rust",
+            callback = function()
+                local attached = false
+                for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+                    if c.name == "rust-analyzer" then
+                        attached = true
+                        break
+                    end
+                end
+                if not attached then
+                    vim.lsp.enable("rust_analyzer")
+                end
+            end,
+        })
     end,
 }
