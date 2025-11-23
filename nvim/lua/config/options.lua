@@ -17,3 +17,5 @@ opt.fixendofline = false
 opt.relativenumber = true 
 opt.timeoutlen = 1000
 opt.spelllang = "en_us"
+opt.shortmess:append("A")
+opt.conceallevel = 2

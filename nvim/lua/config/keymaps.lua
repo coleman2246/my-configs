@@ -76,7 +76,7 @@ map("n", "ml", ":MarksQFListBuf<CR>", { noremap = true, silent = true, desc = "L
 
 
 -- vimwiki
-vim.keymap.set("n", "<leader>ws", function()
+vim.keymap.set("n", "<leader>wS", function()
   local row = vim.api.nvim_win_get_cursor(0)[1]
   vim.api.nvim_buf_set_lines(0, row, row, false, {
     "",
@@ -85,6 +85,8 @@ vim.keymap.set("n", "<leader>ws", function()
   })
 end, { noremap = true, silent = true })
 
-map('n', '<leader>ww', ':VimwikiIndex<CR>', { noremap = true, silent = true })
-map('n', '<leader>wb', ':VimwikiGoBackLink<CR>', { noremap = true, silent = true })
-
+--   map("n", "<Leader>oo", ":ObsidianOpen<CR>",         { desc = "Open Vault" })
+map("n", "<Leader>w<Leader>w", ":ObsidianToday<CR>",        { desc = "Open Daily Note" })
+map("n", "<Leader>wf", ":ObsidianFollowLink<CR>",  { desc = "Follow WikiLink" })
+map("n", "<Leader>wb", ":ObsidianBacklinks<CR>",    { desc = "Show Backlinks" })
+map("n", "<Leader>ws", ":ObsidianQuickSwitch<CR>", { desc = "Quick Switch Notes" })

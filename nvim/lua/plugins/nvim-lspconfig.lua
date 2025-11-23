@@ -108,7 +108,7 @@ return {
 
         vim.lsp.config('rust_analyzer', {
             name = "rust_analyzer",
-            cmd = { "/usr/bin/rust-analyzer"},
+            cmd = { "rust-analyzer"},
             capabilities = {
                 offsetEncoding = { "utf-8", "utf-16" },
                 textDocument = {
