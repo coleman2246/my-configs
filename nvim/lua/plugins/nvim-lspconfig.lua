@@ -33,6 +33,11 @@ return {
         local util = require("lspconfig.util")
         local capabilities = vim.lsp.protocol.make_client_capabilities()
 
+        capabilities.textDocument.foldingRange = {
+            dynamicRegistration = false,
+            lineFoldingOnly = true
+        }
+
         vim.lsp.config('pyrefly', {
            name = "pyrefly",
            cmd = { "pyrefly", "lsp" },
@@ -62,14 +67,7 @@ return {
         vim.lsp.config('clangd', {
             name = "clangd",
             cmd = { "/usr/bin/clangd" },
-            capabilities = {
-                offsetEncoding = { "utf-8", "utf-16" },
-                textDocument = {
-                    completion = {
-                        editsNearCursor = true
-                    }
-                }
-            },
+            capabilities = capabilities,
             filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
             root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
             on_init = function(client, init_result)
@@ -109,18 +107,18 @@ return {
         vim.lsp.config('rust_analyzer', {
             name = "rust_analyzer",
             cmd = { "rust-analyzer"},
-            capabilities = {
-                offsetEncoding = { "utf-8", "utf-16" },
-                textDocument = {
-                    completion = {
-                        editsNearCursor = true
-                    }
-                }
-            },
+            capabilities = capabilities,
             filetypes = {"rust"},
             root_markers = { "Cargo.toml", ".git" },
             on_attach = function(client, bufnr)
                 on_attach(client, bufnr)
+                     -- *** Auto-format on save ***
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                    buffer = bufnr,
+                    callback = function()
+                        vim.lsp.buf.format({ async = false })
+                    end,
+                })
             end,
  
         })

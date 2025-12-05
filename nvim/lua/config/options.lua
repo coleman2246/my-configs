@@ -19,3 +19,9 @@ opt.timeoutlen = 1000
 opt.spelllang = "en_us"
 opt.shortmess:append("A")
 opt.conceallevel = 2
+
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
+opt.foldlevel = 99       -- start with all folds open
+opt.foldlevelstart = 99
+

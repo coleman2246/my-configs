@@ -54,7 +54,7 @@ map('n', ',i', ':FzfLua quickfix<CR>', { noremap = true })
 
 
 -- telescope
-map('n', ',o', ":lua require('telescope').extensions.live_grep_args.live_grep_args({default_text = \"-tc --no-ignore --glob !test* --glob !build* \"})<CR>",{ noremap = true })
+map('n', ',o', ":lua require('telescope').extensions.live_grep_args.live_grep_args({default_text = \"-tc --no-ignore --glob !*test* --glob !*build* \"})<CR>",{ noremap = true })
 map('n', '<Leader>,o', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",{ noremap = true })
 map('n', ',u', ':Telescope buffers<CR>', { noremap = true })
 map('n', ',a', ':Telescope telescope-tabs list_tabs<CR>', { noremap = true })

@@ -21,6 +21,9 @@ return {
                     dismiss = "<C-c>",
                 },
             },
+            filetypes = {
+                ["*"] = true,
+            },
             panel = { enabled = false },  -- optional, disable side panel
         })
     end,
