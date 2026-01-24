@@ -68,8 +68,10 @@ return {
             name = "clangd",
             cmd = { "/usr/bin/clangd" },
             capabilities = capabilities,
-            filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
-            root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
+            filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "h" },
+            root_markers = { "compile_commands.json", ".git" },
+            root_dir =  require("lspconfig.util").find_git_ancestor(fname) or vim.loop.cwd(),
+
             on_init = function(client, init_result)
                 if init_result.offsetEncoding then
                     client.offset_encoding = init_result.offsetEncoding

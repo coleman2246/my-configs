@@ -36,13 +36,25 @@ def find_compile_commands(start_dir):
 def clean_command(entry):
     cwd = entry["directory"]
     tokens = shlex.split(entry["command"])
-
     new_tokens = []
-    skip_next = False
     seen_includes = set()
+    skip_next = False
 
     for i, tok in enumerate(tokens):
-        # Normalize -I and -isystem
+        if skip_next:
+            skip_next = False
+            continue
+
+        tok_clean = tok.strip('"').strip("'")
+
+        # Skip Xtensa-specific flags
+        if tok_clean.startswith("--xtensa-core") or tok_clean.startswith("--xtensa-system"):
+            continue
+
+        if tok_clean.startswith("-mlongcalls") or tok_clean.startswith("-mtext-section-literals"):
+            continue
+
+        # Normalize -I paths
         if tok.startswith("-I"):
             path = tok[2:]
             if not os.path.isabs(path):
@@ -52,25 +64,19 @@ def clean_command(entry):
                 seen_includes.add(path)
             continue
 
+        # Normalize -isystem paths
         if tok == "-isystem" and i + 1 < len(tokens):
             path = tokens[i + 1]
             if not os.path.isabs(path):
                 path = os.path.normpath(os.path.join(cwd, path))
             if path not in seen_includes:
-                new_tokens.extend(["-isystem", path])
+                new_tokens.extend([tok, path])
                 seen_includes.add(path)
             skip_next = True
             continue
 
-        if skip_next:
-            skip_next = False
-            continue
-
-        # Drop unnecessary flags for clangd
-        if tok.startswith("--xtensa-core") or tok.startswith("--xtensa-system"):
-            continue
-
-        if tok.startswith("-o"):  # drop output file
+        # Skip output files
+        if tok.startswith("-o"):
             skip_next = True
             continue
 
@@ -94,17 +100,25 @@ def merge_json_files(file_list, output_file):
             except json.JSONDecodeError as e:
                 print(f"Error parsing JSON in file {file}: {e}")
 
-    files_found  = set()
+    cleaned_json = []
+    files_found = set()
+    duplicates_found = 0
 
-    duplicates_found : int = 0
-    for i, entry in enumerate(merged_json):
+    for entry in merged_json:
         if entry["file"] in files_found:
             duplicates_found += 1
-            del merged_json[i]
-        else:
-            merged_json[i] = clean_command(entry)
+            continue
+        new_json = clean_command(entry)
+        is_unit_test = len(list(filter(lambda item : "unit_test" in item[1] or "unittest" in item[1] , new_json.items()))) > 0
 
+        if is_unit_test:
+            files_found.add(entry["file"])
+            continue
+
+        cleaned_json.append(new_json)
         files_found.add(entry["file"])
+
+    merged_json = cleaned_json
     
 
     with open(output_file, 'w') as outfile:

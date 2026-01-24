@@ -4,9 +4,9 @@ local map = vim.keymap.set
 map('n', '<silent> //', ':noh<CR>', { noremap = true, silent = true })
 map('n', '<leader>dt', ':diffthis<CR>', { noremap = true, silent = true })
 map('n', '<leader>do', ':diffoff!<CR>', { noremap = true, silent = true })
-map("n", "<leader>ln", ":cnext<CR>")
-map("n", "<leader>lp", ":cprev<CR>")
-map("n", "<leader>lo", ":copen<CR>")
+map("n", "<leader>nn", ":cnext<CR>")
+map("n", "<leader>a", ":cprev<CR>")
+map("n", "<leader>o", ":copen<CR>")
 map("n", "<leader>lc", ":cclose<CR>")
 map("n", "<leader>ss", ":set spell! spell?<CR>")
 
